@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+		<meta content="telephone=no" name="format-detection">
+
+		<title>拖拽生成页面</title>
+		<meta content="手机端布局" name="keywords">
+		<meta content="主要应用rem,display:box,box-flex:n,box-sizing:border-box,等知识" name="description">
+		<link rel="stylesheet" href="./css/reset.css">
+		<link rel="stylesheet" href="./css/jquery-ui.min.css">
+		<link rel="stylesheet" href="./css/index.css">
+		<style></style>
+	</head>
+	<body class="margin200" ele="aaaa111">
+		<!-- <div class="y w" namespace_css="y">
+			<div class="d c f" namespace_css="f">
+				<div class="g">
+					<div class="h j" ele="aa777">
+						
+					</div>
+				</div>
+			</div>
+		</div> -->
+
+
+
+		<div id="tools" class="need_remove">
+			<div id="atoms">
+				<div class="atom" mid="001">div</div>
+				<div class="atom" mid="002">a</div>
+				<div class="atom" mid="003">p</div>
+				<div class="atom" mid="004">img</div>
+			</div>
+			
+			<!--当删除nav中的元素时，要同时把对应的文档中的相应元素也要删除掉，他们之间用ele,_ele进行关联-->
+			<div id="nav">
+				<div class="nav_item">
+					<div class="text active" _ele="aaaa111">body</div>
+				</div>
+
+			</div>
+		</div>
+		<div id="ele_config">
+			<div class="hidden" id="forHTMLParse"></div>
+			<div id="prop_zone" class="zone">
+				<div class="title other_title">其他属性</div>
+				<div class="prop_item" _name="href">
+					<div class="prop_title">
+						<div class="label">href:</div>
+						<div class="input">
+							<input type="text" id="input_href">
+						</div>
+						<div class="default">
+							<input type="checkbox" checked>
+						</div>
+					</div>
+				</div>
+				<div class="prop_item" _name="target">
+					<div class="prop_title">
+						<div class="label">target:</div>
+						<div class="input">
+							<input type="text" id="input_target">
+						</div>
+						<div class="default">
+							<input type="checkbox" checked>
+						</div>
+					</div>
+				</div>
+				<div class="prop_item" _name="text">
+					<div class="prop_title">
+						<div class="label">text:</div>
+						<div class="input">
+							<input type="text" id="input_text">
+						</div>
+						<div class="default">
+							<input type="checkbox" checked>
+						</div>
+					</div>
+				</div>
+				<div class="prop_item" _name="src">
+					<div class="prop_title">
+						<div class="label">src:</div>
+						<div class="input">
+							<input type="text" id="input_src">
+						</div>
+						<div class="default">
+							<input type="checkbox" checked>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="css_zone" class="zone">
+				<div class="title">CSS属性相关</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">类名:</div>
+						<div class="input">
+							<input type="text" id="input_classes">
+						</div>
+					</div>
+					
+					<ul class="marginleft30" id="classes">
+						<!-- <li>
+							<span class="name main">test1</span>
+							<span class="btn del" title="删除">D</span>
+							<span class="btn main" title="类名空间">M</span>
+						</li>
+						<li>
+							<span class="name">test2</span>
+							<span class="btn del" title="删除">D</span>
+							<span class="btn main" title="类名空间">M</span>
+						</li> -->
+					</ul>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label" title="如果只输入值，则默认为px,如果输入值单位，则按单位走">width:</div>
+						<div class="input">
+							<input type="text" id="input_width">
+						</div>
+						<div class="default">
+							<input type="checkbox" checked>
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">height:</div>
+						<div class="input">
+							<input type="text" id="input_height">
+						</div>
+						<div class="default">
+							<input type="checkbox" checked>
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">background:</div>
+						<div class="input">
+							<input type="color" id="input_background">
+						</div>
+						<div class="default">
+							<input type="checkbox" checked>
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">color:</div>
+						<div class="input">
+							<input type="color" id="input_color">
+						</div>
+						<div class="default">
+							<input type="checkbox" checked>
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">fontSize:</div>
+						<div class="input">
+							<input type="text" id="input_fontSize">
+						</div>
+						<div class="default">
+							<input type="checkbox" checked>
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">textAlign:</div>
+						<div class="input">
+							<input type="text" id="input_textAlign">
+						</div>
+						<div class="default">
+							<input type="checkbox" checked>
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">lineHeight:</div>
+						<div class="input">
+							<input type="text" id="input_lineHeight">
+						</div>
+						<div class="default">
+							<input type="checkbox" checked>
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">margin:</div>
+						<div class="input">
+							<input type="text" id="input_margin">
+						</div>
+						<div class="default">
+							<input type="checkbox">
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">marginLeft:</div>
+						<div class="input">
+							<input type="text" id="input_marginLeft">
+						</div>
+						<div class="default">
+							<input type="checkbox">
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">marginRight:</div>
+						<div class="input">
+							<input type="text" id="input_marginRight">
+						</div>
+						<div class="default">
+							<input type="checkbox">
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">marginTop:</div>
+						<div class="input">
+							<input type="text" id="input_marginTop">
+						</div>
+						<div class="default">
+							<input type="checkbox">
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">marginBottom:</div>
+						<div class="input">
+							<input type="text" id="input_marginBottom">
+						</div>
+						<div class="default">
+							<input type="checkbox">
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">padding:</div>
+						<div class="input">
+							<input type="text" id="input_padding">
+						</div>
+						<div class="default">
+							<input type="checkbox">
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">paddingLeft:</div>
+						<div class="input">
+							<input type="text" id="input_paddingLeft">
+						</div>
+						<div class="default">
+							<input type="checkbox">
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">paddingRight:</div>
+						<div class="input">
+							<input type="text" id="input_paddingRight">
+						</div>
+						<div class="default">
+							<input type="checkbox">
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">paddingTop:</div>
+						<div class="input">
+							<input type="text" id="input_paddingTop">
+						</div>
+						<div class="default">
+							<input type="checkbox">
+						</div>
+					</div>
+				</div>
+				<div class="prop_item">
+					<div class="prop_title">
+						<div class="label">paddingBottom:</div>
+						<div class="input">
+							<input type="text" id="input_paddingBottom">
+						</div>
+						<div class="default">
+							<input type="checkbox">
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			
+		</div>
+
+		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="js/jquery-ui.min.js"></script>
+		<script src="js/index.js"></script>
+	</body>
+	
+	<!-- <script src="js/draggabilly.pkgd.js"></script> -->
+</html>

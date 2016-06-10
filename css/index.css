@@ -1,0 +1,36 @@
+html,body{height: 100%;}
+.hidden{display: none;}
+.marginleft30{margin-left: 30px;}
+.margin200{margin: 0 200px;background: #fff;}
+.zone{margin-bottom: 10px;}
+.zone .title{margin-bottom: 10px;text-align: center;}
+#tools,#ele_config{position: fixed;top: 0;width: 200px;height: 100%;background: rgba(111,111,111,.7);box-sizing:border-box;}
+#tools{left: 0;}
+#atoms{margin-bottom: 10px;}
+.atom{width: 40px;height: 26px;line-height: 26px;text-align: center;cursor: pointer;border: 1px solid #ad43d6;color: #fff;margin-left: 2px;margin-top: 2px;display: inline-block;}
+.atom.active{background: #a675f3;}
+
+#ele_config{right: 0;padding: 8px;}
+#ele_config input{border: none;padding:4px;box-sizing:border-box;width: 60px; }
+.prop_item{margin-bottom: 6px;}
+#prop_zone .prop_item{display: none;}
+#prop_zone .prop_item.has{display: block;}
+.prop_title{display: -webkit-box;display: box;-webkit-box-align:center;}
+.prop_title .label{width: 80px;}
+.prop_title .input{-webkit-box-flex:1;box-flex:1;}
+.prop_title .default{-webkit-box-flex:1;box-flex:1;}
+#classes li{height: 20px;line-height: 20px;color: #fff;}
+#classes li:hover{background: #a675f3;}
+.btn{margin-left: 20px;cursor: pointer;display: none;}
+.del:hover{color: red;}
+.namespace:hover{color: green;}
+#classes li:hover .btn{display: inline-block;}
+#nav .text:hover .btn{display: inline-block;}
+.namespace.name{color: green;}
+.other_title{display: none;}
+.has .other_title{display: block;}
+
+#nav{background: orange;}
+.nav_item{line-height: 20px;padding-left: 4px;background: #a567fd;}
+.nav_item .text.active{background: yellow;}
+.nav_item .text:hover{background: green;}
