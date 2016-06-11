@@ -16,3 +16,5 @@ fieldset,img{border:0}
 table{border-collapse:collapse;border-spacing:0}
 hr{border:0;height:1px}
 *{-ms-word-break:break-all;word-break:break-all;-ms-word-wrap:break-word;word-wrap:break-word;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+html,body{height: 100%;}
+.clear_rx{zoom:1;} .clear_rx:after{display: block;clear: both;content: ""}

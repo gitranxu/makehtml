@@ -63,6 +63,23 @@ function nav_event(){
 	$('#nav').on('click','.text',function(e){
 		$('#nav .text').removeClass('active');
 		$(this).addClass('active');
+		//根据_namespace找到对应的样式，然后将其在配置面板中进行显示
+		var _namespace = $(this).attr('_namespace');
+		var style_s = getStyleByKey(_namespace);
+		if(style_s){
+			$('#nav_css').val(style_s);
+		}else{
+			$('#nav_css').val('');
+		}
+	});
+
+	$('#nav_css').on('change',function(){
+		var _namespace = $('#nav .text.active').attr('_namespace');
+		if(_namespace){
+			saveStyle(_namespace,$(this).val());
+		}
+
+		reDrawStyle();
 	});
 
 	$('#nav').on('click','.text .del',function(){
@@ -72,10 +89,35 @@ function nav_event(){
 		var $text = $(this).parent();
 		var _ele = $text.attr('_ele');
 		var _namespace = $text.attr('_namespace');
-		$(this).parents('.nav_item').eq(0).remove(); //删除自己
-		$('[ele="'+_ele+'"]').remove();//删除页面对应元素
+
 		delStyle(_namespace);
 
+		$(this).parents('.nav_item').eq(0).remove(); //删除自己
+		$('[ele="'+_ele+'"]').remove();//删除页面对应元素
+
+
+		$('#nav_css').val('');
+		return false;
+	});
+
+	//生成页面代码
+	$('#generateCode').on('click',function(){
+		//$html = $(document).find('.need_remove').remove();
+		//console.log($html.get(0))
+		$('#tmp').empty().append($('#tmp').siblings().clone());
+		$('#tmp').find('.need_remove').remove();
+		$('#tmp').find('[ele]').removeAttr('ele');
+		$('#tmp').find('[namespace_css]').removeAttr('namespace_css');
+		var body_content = $('#tmp').html();
+		var $style = $('style').eq(0);
+		var html = '<!DOCTYPE html><html><head><link rel="stylesheet" href="./css/reset.css"><style>'+$style.text()+'</style></head><body>'+body_content+'</body></html>';
+
+		
+		$('#pageCode code').text(html);
+		$('#pageCode').show();
+	});
+	$('.close').on('click',function(){
+		$(this).parent().hide();
 	});
 }
 
@@ -126,6 +168,7 @@ function saveConfigCss($html,uuid){
 	//.test1 .test2 .c{width:10px;}
 	//得到类名的时候，最多向外取三层，取每层的类名空间
 	var namespace_css_s = getNameSpace($html);
+	console.log(namespace_css_s)
 
 	addNav($html,uuid,namespace_css_s);
 
@@ -133,23 +176,26 @@ function saveConfigCss($html,uuid){
 		return;
 	}
 	var opt_css = '';
+	opt_css += getOptionCSS('display',$('#input_display'),true);
+	opt_css += getOptionCSS('border',$('#input_border'),true);
 	opt_css += getOptionCSS('width',$('#input_width'));
 	opt_css += getOptionCSS('height',$('#input_height'));
 	opt_css += getOptionCSS('background',$('#input_background'),true);
 	opt_css += getOptionCSS('color',$('#input_color'),true);
-	opt_css += getOptionCSS('font-size',$('#input_fontSize'));
-	opt_css += getOptionCSS('text-align',$('#input_textAlign'),true);
-	opt_css += getOptionCSS('line-height',$('#input_lineHeight'));
+	opt_css += getOptionCSS('font-size',$('#input_font-size'));
+	opt_css += getOptionCSS('text-align',$('#input_text-align'),true);
+	opt_css += getOptionCSS('line-height',$('#input_line-height'));
+	opt_css += getOptionCSS('float',$('#input_float'),true);
 	opt_css += getOptionCSS('margin',$('#input_margin'),true);
-	opt_css += getOptionCSS('margin-left',$('#input_marginLeft'));
-	opt_css += getOptionCSS('margin-right',$('#input_marginRight'));
-	opt_css += getOptionCSS('margin-top',$('#input_marginTop'));
-	opt_css += getOptionCSS('margin-bottom',$('#input_marginBottom'));
+	opt_css += getOptionCSS('margin-left',$('#input_margin-left'));
+	opt_css += getOptionCSS('margin-right',$('#input_margin-right'));
+	opt_css += getOptionCSS('margin-top',$('#input_margin-top'));
+	opt_css += getOptionCSS('margin-bottom',$('#input_margin-bottom'));
 	opt_css += getOptionCSS('padding',$('#input_padding'),true);
-	opt_css += getOptionCSS('padding-left',$('#input_paddingLeft'));
-	opt_css += getOptionCSS('padding-right',$('#input_paddingRight'));
-	opt_css += getOptionCSS('padding-top',$('#input_paddingTop'));
-	opt_css += getOptionCSS('padding-bottom',$('#input_paddingBottom'));
+	opt_css += getOptionCSS('padding-left',$('#input_padding-left'));
+	opt_css += getOptionCSS('padding-right',$('#input_padding-right'));
+	opt_css += getOptionCSS('padding-top',$('#input_padding-top'));
+	opt_css += getOptionCSS('padding-bottom',$('#input_padding-bottom'));
 
 	var css_s =  namespace_css_s+'{'+opt_css+'}';
 	/*var style_s = $('style').eq(0).text();
@@ -167,6 +213,11 @@ function saveStyle(key,val){
 	style_obj[key] = val;
 }
 
+function getStyleByKey(key){
+	return style_obj[key];
+}
+
+//这里应该是一个递归
 function delStyle(key){
 	//删除的时候要查询同一个样式，是否还有其他元素使用，如果还有，则不删除，如果已没有元素在使用了，则删除
 	var $hasOther = $('#nav').find('[_namespace="'+key+'"]');
@@ -204,6 +255,9 @@ function addNav($html,uuid,namespace){
 //得到某个属性的css字符串  not_auto_add_danwei:不自动加上默认px单位
 function getOptionCSS(name,$val,not_auto_add_danwei){
 	var val = $val.val();
+	if(val.trim()==''){
+		return '';
+	}
 	if(!not_auto_add_danwei && !reg_danwei.test(val)){ //如果没有单位，则加上单位
 		val+='px';
 	}
@@ -222,9 +276,9 @@ function getNameSpace($html){
 	var empty = false;//是否没有类名，如果没有类名，则返回空，这时候不需要读取配置信息
 	getS($html);
 	function getS($html){
-		var namespace_css = '';
+		var namespace_css = $html.attr('namespace_css');
 		if(count==0){//如果是它本身，如果没有namespace,则取其第一个类名作为样式名(如果要用配置模板，则肯定要有类名)
-			namespace_css = $html.attr('namespace_css');
+			//namespace_css = $html.attr('namespace_css');
 			//namespace_css = namespace_css || $html.attr('class').split(' ')[0];
 			if(!namespace_css){
 				if($html.attr('class')){
@@ -317,18 +371,46 @@ function parseModelToConfig(model_obj){
 		}
 	} 
 
+	var display = cs_def.display;
+	display && $('#input_display').val(display);
+	var border = cs_def.border;
+	border && $('#input_border').val(border);
 	var width = cs_def.width;
 	width && $('#input_width').val(width);
-
 	var height = cs_def.height;
 	height && $('#input_height').val(height);
-
+	var background = cs_def.background;
+	background && $('#input_background').val(background);
+	var color = cs_def.color;
+	color && $('#input_color').val(color);
+	var fontSize = cs_def.fontSize;
+	fontSize && $('#input_font-size').val(fontSize);
+	var textAlign = cs_def.textAlign;
+	textAlign && $('#input_text-align').val(textAlign);
+	var lineHeight = cs_def.lineHeight;
+	lineHeight && $('#input_line-height').val(lineHeight);
+	var float = cs_def.float;
+	float && $('#input_line-float').val(float);
 	var margin = cs_def.margin;
 	margin && $('#input_margin').val(margin);
-
 	var marginLeft = cs_def.marginLeft;
-	marginLeft && $('#input_marginLeft').val(marginLeft);
-
+	marginLeft && $('#input_margin-left').val(marginLeft);
+	var marginRight = cs_def.marginRight;
+	marginRight && $('#input_margin-right').val(marginRight);
+	var marginTop = cs_def.marginTop;
+	marginTop && $('#input_margin-top').val(marginTop);
+	var marginBottom = cs_def.marginBottom;
+	marginBottom && $('#input_margin-bottom').val(marginBottom);
+	var padding = cs_def.padding;
+	padding && $('#input_padding').val(padding);
+	var paddingLeft = cs_def.paddingLeft;
+	paddingLeft && $('#input_padding-left').val(paddingLeft);
+	var paddingRight = cs_def.paddingRight;
+	paddingRight && $('#input_padding-right').val(paddingRight);
+	var paddingTop = cs_def.paddingTop;
+	paddingTop && $('#input_padding-top').val(paddingTop);
+	var paddingBottom = cs_def.paddingBottom;
+	paddingBottom && $('#input_padding-bottom').val(paddingBottom);
 	//解析prop
 	var props = model_obj.opt_default;
 	$('#prop_zone').removeClass('has');
@@ -370,50 +452,116 @@ var model_arr = [{
 		css:'',
 		//css:'.test{background:red;}',
 		css_default:{
-			width:180,
-			height:40,
-			fontSize:30,
-			fontColor:'yellow',
+			//display:'block',
+			//border:'1px solid green',
+			width:1200,
+			height:80,
+			background:'#ade332',
+			//color:'#ffffff',
+			//fontSize:30,
+			//textAlign:'center',
+			//lineHeight:'20',
+			classes:''
+			/*float:'left',
 			margin:'0 auto',
 			marginLeft:'30px',
-			classes:'t a:namespace b'
+			marginRight:'30px',
+			marginTop:'30px',
+			marginBottom:'30px',
+			padding:'0 auto',
+			paddingLeft:'30px',
+			paddingRight:'30px',
+			paddingTop:'30px',
+			paddingBottom:'30px',
+			classes:'t a:namespace b'*/
 		}
 	},{
 		id:'002',
 		name :'模板a',
 		html:'<a></a>',
 		css:'',
-		//css:'.test{background:red;}',
 		css_default:{
-			width:180,
-			height:140,
+			display:'block',
+			width:'100%',
+			height:40,
+			color:'#ffffff',
 			fontSize:30,
-			fontColor:'yellow',
-			margin:'10px auto',
-			marginLeft:'60px',
-			classes:'t a:namespace b'
+			textAlign:'center',
+			lineHeight:'20',
+			classes:''
 		},
 		opt_default:{
 			href:'http://www.sohu.com',
-			target:'_blank',
+			target:'',
 			text:'GOGOGO'
+		}
+	},{
+		id:'003',
+		name :'模板p',
+		html:'<p></p>',
+		css:'',
+		css_default:{
+			width:400,
+			height:32,
+			color:'#ffffff',
+			fontSize:20,
+			textAlign:'center',
+			lineHeight:32,
+			classes:''
+		},
+		opt_default:{
+			text:'这里写一些文字'
 		}
 	},{
 		id:'004',
 		name :'模板img',
 		html:'<img></img>',
 		css:'',
-		//css:'.test{background:red;}',
 		css_default:{
+			display:'block',
 			width:180,
-			height:140,
-			fontSize:30,
-			fontColor:'yellow',
-			margin:'10px auto',
-			marginLeft:'60px',
-			classes:'t a:namespace b'
+			height:40,
+			classes:''
 		},
 		opt_default:{
 			src:'http://imgsrc.baidu.com/forum/w=580/sign=839627fc2d381f309e198da199034c67/c2290a55b319ebc4aafc635d8726cffc1f171601.jpg'
+		}
+	},{
+		id:'005',
+		name :'模板ul',
+		html:'<ul></ul>',
+		css:'',
+		css_default:{
+			classes:''
+		}
+	},{
+		id:'006',
+		name :'模板li',
+		html:'<li></li>',
+		css:'',
+		css_default:{
+			width:180,
+			height:40,
+			color:'#ffffff',
+			fontSize:20,
+			textAlign:'left',
+			lineHeight:32,
+			classes:''
+		},
+		opt_default:{
+			text:''
+		}
+	},{
+		id:'007',
+		name :'模板span',
+		html:'<span></span>',
+		css:'',
+		css_default:{
+			color:'#ffffff',
+			fontSize:20,
+			classes:''
+		},
+		opt_default:{
+			text:'span里的文字'
 		}
 	}];

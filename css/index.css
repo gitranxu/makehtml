@@ -30,7 +30,16 @@ html,body{height: 100%;}
 .other_title{display: none;}
 .has .other_title{display: block;}
 
-#nav{background: orange;}
-.nav_item{line-height: 20px;padding-left: 4px;background: #a567fd;}
+#nav_css{width: 188px;border:1px solid #777;text-align: left;margin-top: 10px;margin-left: 10px;}
+
+#nav{background: orange;margin-left: -14px;}
+.nav_item{line-height: 20px;padding-left: 14px;background: #a567fd;}
 .nav_item .text.active{background: yellow;}
 .nav_item .text:hover{background: green;}
+
+#generateCode{margin: 10px;box-sizing:border-box;height: 40px;line-height: 40px;text-align: center;cursor: pointer;background: #345a23;}
+#generateCode:hover{background: green;color: #fff;}
+#pageCode{width: 40%;height: 40%;position: fixed;top: 50%;left: 50%;margin-top: -10%;margin-left: -20%;background: #365681;padding: 10px;display: none;}
+#pageCode code{color: #fff;}
+#pageCode .close{height: 32px;line-height: 32px;text-align: center;cursor: pointer;background: green;}
+#pageCode .close:hover{color: red;}
